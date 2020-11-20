@@ -20,12 +20,10 @@ const CardChat = (props) => {
         <CardItem style={{backgroundColor: props.messageColor}}>
           <Body>
             <Text style={{color: '#e6e9ef'}}>{props.message}</Text>
-          </Body>
-          <Right style={{alignSelf: 'flex-end'}}>
-            <Text note style={{color: '#767d92'}}>
+            <Text note style={{color: '#767d92', alignSelf: 'flex-end'}}>
               9:12 PM
             </Text>
-          </Right>
+          </Body>
         </CardItem>
       </Card>
     </View>
