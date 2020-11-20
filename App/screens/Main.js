@@ -1,7 +1,10 @@
 import React from 'react';
 import {View, Text, Button} from 'native-base';
 
+import {useNavigation} from '@react-navigation/native';
+
 const Main = () => {
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -27,7 +30,10 @@ const Main = () => {
         </Text>
       </View>
       <View style={{width: '100%', paddingHorizontal: 35}}>
-        <Button full style={{backgroundColor: '#4995be', color: '#e6e9ef'}}>
+        <Button
+          full
+          style={{backgroundColor: '#4995be', color: '#e6e9ef'}}
+          onPress={() => navigation.navigate('Login')}>
           <Text>START MESSAGING</Text>
         </Button>
       </View>

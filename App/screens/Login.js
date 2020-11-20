@@ -1,7 +1,10 @@
 import React from 'react';
 import {View, Text, Button, Item, Input, Form} from 'native-base';
 
+import {useNavigation} from '@react-navigation/native';
+
 const Login = () => {
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -57,7 +60,10 @@ const Login = () => {
         </Form>
       </View>
       <View style={{width: '100%', paddingHorizontal: 35}}>
-        <Button full style={{backgroundColor: '#4995be', color: '#e6e9ef'}}>
+        <Button
+          full
+          style={{backgroundColor: '#4995be', color: '#e6e9ef'}}
+          onPress={() => navigation.navigate('Profile')}>
           <Text>NEXT</Text>
         </Button>
       </View>

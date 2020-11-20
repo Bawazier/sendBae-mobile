@@ -15,7 +15,7 @@ import {
   Badge,
 } from 'native-base';
 
-const ChatList = () => {
+const ChatList = ({navigation}) => {
   return (
     <>
       <Header
@@ -31,6 +31,7 @@ const ChatList = () => {
           name="navicon"
           type="FontAwesome"
           style={{color: '#767d92', marginRight: 15, fontSize: 25}}
+          onPress={() => navigation.openDrawer()}
         />
         <Item style={{backgroundColor: '#152642'}}>
           <Icon
@@ -47,7 +48,7 @@ const ChatList = () => {
       <Content style={{backgroundColor: '#081b33'}}>
         {[...Array(10)].map((item) => (
           <List>
-            <ListItem avatar>
+            <ListItem avatar onPress={() => navigation.navigate('ChatRoom')}>
               <Left>
                 <Thumbnail
                   source={{

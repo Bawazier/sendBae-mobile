@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Content,
   Header,
@@ -10,19 +10,20 @@ import {
   ListItem,
   Left,
   Body,
-  Right,
   Thumbnail,
   Button,
   Footer,
   FooterTab,
 } from 'native-base';
 
+import ModalNewContact from '../components/ModalNewContact';
+
 const Contacts = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
       <Header
-        searchBar
-        rounded
+        span
         style={{
           backgroundColor: '#152642',
           borderBottomWidth: 0.5,
@@ -30,17 +31,19 @@ const Contacts = () => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Item style={{backgroundColor: '#152642'}}>
-          <Icon
-            name="search"
-            type="FontAwesome"
-            style={{color: '#2f4562', fontSize: 15}}
-          />
-          <Input
-            placeholder="Search"
-            style={{color: '#e6e9ef', fontSize: 15}}
-          />
-        </Item>
+        <Body>
+          <Item style={{backgroundColor: '#152642', borderBottomWidth: 0}}>
+            <Icon
+              name="search"
+              type="FontAwesome"
+              style={{color: '#2f4562', fontSize: 15}}
+            />
+            <Input
+              placeholder="Search"
+              style={{color: '#e6e9ef', fontSize: 15}}
+            />
+          </Item>
+        </Body>
       </Header>
       <Content style={{backgroundColor: '#152642'}}>
         {[...Array(10)].map((item) => (
@@ -63,10 +66,16 @@ const Contacts = () => {
             </ListItem>
           </List>
         ))}
+        <ModalNewContact
+          modalVisible={modalVisible}
+          setModalVisible={() => setModalVisible(!modalVisible)}
+        />
       </Content>
       <Footer>
         <FooterTab>
-          <Button style={{backgroundColor: '#152642'}}>
+          <Button
+            style={{backgroundColor: '#152642'}}
+            onPress={() => setModalVisible(true)}>
             <Text style={{fontSize: 15, color: '#4995be'}}>ADD CONTACT</Text>
           </Button>
         </FooterTab>

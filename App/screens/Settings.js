@@ -15,12 +15,16 @@ import {
   Button,
 } from 'native-base';
 
-const Settings = () => {
+const Settings = ({navigation}) => {
   return (
-    <Content>
+    <Content
+      style={{
+        backgroundColor: '#2f4562',
+      }}>
       <View
         style={{
           backgroundColor: '#152642',
+          paddingTop: 60,
           paddingVertical: 20,
           marginBottom: 10,
         }}>
@@ -51,7 +55,10 @@ const Settings = () => {
           marginBottom: 10,
         }}>
         <List>
-          <ListItem avatar style={{height: 60}}>
+          <ListItem
+            avatar
+            style={{height: 60}}
+            onPress={() => navigation.navigate('Profile')}>
             <Left>
               <Icon
                 name="info-circle"

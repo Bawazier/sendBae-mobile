@@ -38,10 +38,10 @@ const ChatRoom = () => {
           keyExtractor={(item) => item.id}
         />
       </Content>
-      <Footer style={{backgroundColor: '#2f4562'}}>
+      <Footer style={{backgroundColor: '#152642'}}>
         <Item
           style={{
-            backgroundColor: '#2f4562',
+            backgroundColor: '#152642',
             width: '100%',
             borderBottomWidth: 0,
           }}>

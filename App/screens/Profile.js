@@ -17,7 +17,10 @@ import {
 
 const Profile = () => {
   return (
-    <Content>
+    <Content
+      style={{
+        backgroundColor: '#2f4562',
+      }}>
       <View
         style={{
           justifyContent: 'center',
@@ -28,7 +31,7 @@ const Profile = () => {
             uri:
               'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
           }}
-          style={{width: 100, height: 100, marginVertical: 20}}
+          style={{width: 80, height: 80, borderRadius: 80, marginVertical: 40}}
         />
         <Button
           rounded
@@ -118,7 +121,7 @@ const Profile = () => {
       <View
         style={{
           backgroundColor: '#152642',
-          height: 177,
+          height: '100%',
           padding: 10,
         }}>
         <Item style={{marginVertical: 10, borderColor: '#2f4562'}}>
