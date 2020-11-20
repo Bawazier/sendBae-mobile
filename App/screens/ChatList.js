@@ -1,4 +1,5 @@
 import React from 'react';
+import {FlatList} from 'react-native';
 import {
   Content,
   Header,
@@ -16,6 +17,44 @@ import {
 } from 'native-base';
 
 const ChatList = ({navigation}) => {
+  const data = [
+    {
+      id: 1,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
+      newMessageCount: 204,
+      timeMessage: '10:32',
+    },
+    {
+      id: 2,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
+      newMessageCount: 204,
+      timeMessage: '10:32',
+    },
+    {
+      id: 3,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
+      newMessageCount: 204,
+      timeMessage: '10:32',
+    },
+    {
+      id: 4,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
+      newMessageCount: 204,
+      timeMessage: '10:32',
+    },
+  ];
   return (
     <>
       <Header
@@ -46,34 +85,37 @@ const ChatList = ({navigation}) => {
         </Item>
       </Header>
       <Content style={{backgroundColor: '#081b33'}}>
-        {[...Array(10)].map((item) => (
-          <List>
+        <FlatList
+          data={data}
+          renderItem={({item}) => (
             <ListItem avatar onPress={() => navigation.navigate('ChatRoom')}>
               <Left>
                 <Thumbnail
                   source={{
-                    uri:
-                      'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+                    uri: item.imageUser,
                   }}
                 />
               </Left>
               <Body style={{borderBottomWidth: 0}}>
-                <Text style={{color: '#e6e9ef'}}>Kumar Pratik</Text>
+                <Text style={{color: '#e6e9ef'}}>{item.nameUser}</Text>
                 <Text note style={{color: '#767d92'}}>
-                  Doing what you like will always keep you happy . .
+                  {item.newMessage > 20
+                    ? item.newMessage
+                    : item.newMessage.concat('...')}
                 </Text>
               </Body>
               <Right style={{borderBottomWidth: 0}}>
                 <Text note style={{color: '#767d92'}}>
-                  3:43 pm
+                  {item.timeMessage}
                 </Text>
                 <Badge info style={{marginVertical: 10}}>
-                  <Text>2</Text>
+                  <Text>{item.newMessageCount}</Text>
                 </Badge>
               </Right>
             </ListItem>
-          </List>
-        ))}
+          )}
+          keyExtractor={(item) => item.id}
+        />
       </Content>
     </>
   );

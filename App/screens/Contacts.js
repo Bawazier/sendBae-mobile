@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {FlatList} from 'react-native';
 import {
   Content,
   Header,
@@ -20,6 +21,36 @@ import ContactDialog from '../components/ContactDialog';
 
 const Contacts = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const data = [
+    {
+      id: 1,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      lastActive: 'last seen 29.10.20',
+    },
+    {
+      id: 2,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      lastActive: 'last seen 29.10.20',
+    },
+    {
+      id: 3,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      lastActive: 'last seen 29.10.20',
+    },
+    {
+      id: 4,
+      imageUser:
+        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+      nameUser: 'Kumar Pratik',
+      lastActive: 'last seen 29.10.20',
+    },
+  ];
   return (
     <>
       <Header
@@ -46,26 +77,27 @@ const Contacts = () => {
         </Body>
       </Header>
       <Content style={{backgroundColor: '#152642'}}>
-        {[...Array(10)].map((item) => (
-          <List>
+        <FlatList
+          data={data}
+          renderItem={({item}) => (
             <ListItem avatar>
               <Left>
                 <Thumbnail
                   source={{
-                    uri:
-                      'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+                    uri: item.imageUser,
                   }}
                 />
               </Left>
               <Body style={{borderBottomWidth: 0}}>
-                <Text style={{color: '#e6e9ef'}}>Kumar Pratik</Text>
+                <Text style={{color: '#e6e9ef'}}>{item.nameUser}</Text>
                 <Text note style={{color: '#2f4562'}}>
-                  last seen 12.11.20
+                  {item.lastActive}
                 </Text>
               </Body>
             </ListItem>
-          </List>
-        ))}
+          )}
+          keyExtractor={(item) => item.id}
+        />
         <ContactDialog
           visible={modalVisible}
           handleCancel={() => setModalVisible(!modalVisible)}
