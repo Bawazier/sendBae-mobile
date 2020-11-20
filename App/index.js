@@ -18,12 +18,12 @@ import Profile from './screens/Profile';
 import Settings from './screens/Settings';
 import ChatRoom from './screens/ChatRoom';
 
-// import Screens from './navigations';
+import Screens from './navigations';
 
 const App = () => {
   return (
     <MainContainer>
-      <ChatRoom />
+      <Screens />
     </MainContainer>
   );
 };
