@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Content,
   View,
@@ -15,7 +15,14 @@ import {
   Button,
 } from 'native-base';
 
+import ChangeNameDialog from '../components/ChangeNameDialog';
+import ChangePhoneDialog from '../components/ChangePhoneDialog';
+import ChangeUsernameDialog from '../components/ChangeUsernameDialog';
+
 const Profile = () => {
+  const [changeName, setChangeName] = useState(false);
+  const [changePhone, setChangePhone] = useState(false);
+  const [changeUsername, setChangeUsername] = useState(false);
   return (
     <Content
       style={{
@@ -31,7 +38,7 @@ const Profile = () => {
             uri:
               'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
           }}
-          style={{width: 80, height: 80, borderRadius: 80, marginVertical: 40}}
+          style={{width: 100, height: 100, borderRadius: 100, marginVertical: 20}}
         />
         <Button
           rounded
@@ -50,7 +57,7 @@ const Profile = () => {
           marginVertical: 10,
         }}>
         <List>
-          <ListItem avatar>
+          <ListItem avatar onPress={() => setChangeName(true)}>
             <Left>
               <Icon
                 name="user"
@@ -72,7 +79,7 @@ const Profile = () => {
               />
             </Right>
           </ListItem>
-          <ListItem avatar>
+          <ListItem avatar onPress={() => setChangePhone(true)}>
             <Left>
               <Icon
                 name="phone"
@@ -94,7 +101,7 @@ const Profile = () => {
               />
             </Right>
           </ListItem>
-          <ListItem avatar>
+          <ListItem avatar onPress={() => setChangeUsername(true)}>
             <Left>
               <Icon
                 name="at"
@@ -132,6 +139,18 @@ const Profile = () => {
           from San Francisco
         </Text>
       </View>
+      <ChangeNameDialog
+        visible={changeName}
+        handleCancel={() => setChangeName(!changeName)}
+      />
+      <ChangePhoneDialog
+        visible={changePhone}
+        handleCancel={() => setChangePhone(!changePhone)}
+      />
+      <ChangeUsernameDialog
+        visible={changeUsername}
+        handleCancel={() => setChangeUsername(!changeUsername)}
+      />
     </Content>
   );
 };

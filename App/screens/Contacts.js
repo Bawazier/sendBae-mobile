@@ -16,7 +16,7 @@ import {
   FooterTab,
 } from 'native-base';
 
-import ModalNewContact from '../components/ModalNewContact';
+import ContactDialog from '../components/ContactDialog';
 
 const Contacts = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -66,9 +66,9 @@ const Contacts = () => {
             </ListItem>
           </List>
         ))}
-        <ModalNewContact
-          modalVisible={modalVisible}
-          setModalVisible={() => setModalVisible(!modalVisible)}
+        <ContactDialog
+          visible={modalVisible}
+          handleCancel={() => setModalVisible(!modalVisible)}
         />
       </Content>
       <Footer>

@@ -11,7 +11,6 @@ import {
   Thumbnail,
 } from 'native-base';
 
-
 const SideBar = ({navigation}) => {
   return (
     <View style={{backgroundColor: '#152642', flex: 1}}>
