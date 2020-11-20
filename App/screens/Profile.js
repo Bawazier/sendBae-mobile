@@ -14,6 +14,7 @@ import {
   Thumbnail,
   Button,
 } from 'native-base';
+import ImagePicker from 'react-native-image-picker';
 
 import ChangeNameDialog from '../components/ChangeNameDialog';
 import ChangePhoneDialog from '../components/ChangePhoneDialog';
@@ -23,6 +24,40 @@ const Profile = () => {
   const [changeName, setChangeName] = useState(false);
   const [changePhone, setChangePhone] = useState(false);
   const [changeUsername, setChangeUsername] = useState(false);
+
+  const selectImage = () => {
+    let options = {
+      title: 'You can choose one image',
+      maxWidth: 256,
+      maxHeight: 256,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log({response});
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        let source = {uri: response.uri};
+        const imageData = new FormData();
+        imageData.append('picture', {
+          uri: response.uri,
+          type: response.type,
+          name: response.fileName,
+          path: response.path,
+        });
+        console.log(imageData);
+      }
+    });
+  };
+
   return (
     <Content
       style={{
@@ -38,10 +73,16 @@ const Profile = () => {
             uri:
               'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
           }}
-          style={{width: 100, height: 100, borderRadius: 100, marginVertical: 20}}
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 100,
+            marginVertical: 20,
+          }}
         />
         <Button
           rounded
+          onPress={selectImage}
           style={{
             backgroundColor: '#4995be',
             color: '#e6e9ef',
