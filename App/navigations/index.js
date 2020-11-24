@@ -1,4 +1,5 @@
 import React from 'react';
+import {useSelector} from 'react-redux';
 
 import Main from '../screens/Main';
 import Login from '../screens/Login';
@@ -194,9 +195,10 @@ const ContactStack = ({navigation}) => {
 };
 
 const Navigations = () => {
+  const auth = useSelector((state) => state.auth);
   return (
     <NavigationContainer>
-      {false ? (
+      {!auth.token.length ? (
         <AuthStack />
       ) : (
         <Drawer.Navigator initialRouteName="Home" drawerContent={SideBar}>
