@@ -1,4 +1,6 @@
-import React from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {FlatList} from 'react-native';
 import {
   Content,
@@ -16,45 +18,23 @@ import {
   Badge,
 } from 'native-base';
 
+//Actions
+import MessageActions from '../redux/actions/message';
+
 const ChatList = ({navigation}) => {
-  const data = [
-    {
-      id: 1,
-      imageUser:
-        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-      nameUser: 'Kumar Pratik',
-      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
-      newMessageCount: 204,
-      timeMessage: '10:32',
-    },
-    {
-      id: 2,
-      imageUser:
-        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-      nameUser: 'Kumar Pratik',
-      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
-      newMessageCount: 204,
-      timeMessage: '10:32',
-    },
-    {
-      id: 3,
-      imageUser:
-        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-      nameUser: 'Kumar Pratik',
-      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
-      newMessageCount: 204,
-      timeMessage: '10:32',
-    },
-    {
-      id: 4,
-      imageUser:
-        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-      nameUser: 'Kumar Pratik',
-      newMessage: 'Latihan sederhana membuat aplikasi cuaca',
-      newMessageCount: 204,
-      timeMessage: '10:32',
-    },
-  ];
+  const auth = useSelector((state) => state.auth);
+  const message = useSelector((state) => state.message);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(MessageActions.getMessageList(auth.token));
+  }, []);
+
+  const handlePressList = async (id) => {
+    await dispatch(MessageActions.getMessage(auth.token, id));
+    navigation.navigate('ChatRoom');
+  };
+
   return (
     <>
       <Header
@@ -85,37 +65,49 @@ const ChatList = ({navigation}) => {
         </Item>
       </Header>
       <Content style={{backgroundColor: '#081b33'}}>
-        <FlatList
-          data={data}
-          renderItem={({item}) => (
-            <ListItem avatar onPress={() => navigation.navigate('ChatRoom')}>
-              <Left>
-                <Thumbnail
-                  source={{
-                    uri: item.imageUser,
-                  }}
-                />
-              </Left>
-              <Body style={{borderBottomWidth: 0}}>
-                <Text style={{color: '#e6e9ef'}}>{item.nameUser}</Text>
-                <Text note style={{color: '#767d92'}}>
-                  {item.newMessage > 20
-                    ? item.newMessage
-                    : item.newMessage.concat('...')}
-                </Text>
-              </Body>
-              <Right style={{borderBottomWidth: 0}}>
-                <Text note style={{color: '#767d92'}}>
-                  {item.timeMessage}
-                </Text>
-                <Badge info style={{marginVertical: 10}}>
-                  <Text>{item.newMessageCount}</Text>
-                </Badge>
-              </Right>
-            </ListItem>
-          )}
-          keyExtractor={(item) => item.id}
-        />
+        {message.isLoading && !message.isError && (
+          <Text note style={{color: '#767d92'}}>
+            Loading....
+          </Text>
+        )}
+        {!message.isLoading && message.isError && (
+          <Text note style={{color: '#F01F0E'}}>
+            Bad connection. Please try again
+          </Text>
+        )}
+        {!message.isLoading && !message.isError && (
+          <FlatList
+            data={message.dataList}
+            renderItem={({item}) => (
+              <ListItem avatar onPress={() => handlePressList}>
+                <Left>
+                  <Thumbnail
+                    source={{
+                      uri: item.imageUser,
+                    }}
+                  />
+                </Left>
+                <Body style={{borderBottomWidth: 0}}>
+                  <Text style={{color: '#e6e9ef'}}>{item.nameUser}</Text>
+                  <Text note style={{color: '#767d92'}}>
+                    {item.newMessage > 20
+                      ? item.newMessage
+                      : item.newMessage.concat('...')}
+                  </Text>
+                </Body>
+                <Right style={{borderBottomWidth: 0}}>
+                  <Text note style={{color: '#767d92'}}>
+                    {item.timeMessage}
+                  </Text>
+                  <Badge info style={{marginVertical: 10}}>
+                    <Text>{item.newMessageCount}</Text>
+                  </Badge>
+                </Right>
+              </ListItem>
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        )}
       </Content>
     </>
   );
