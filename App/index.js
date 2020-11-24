@@ -7,24 +7,25 @@
  */
 
 import React from 'react';
+import {Provider} from 'react-redux';
+import store from './redux/store';
+import {persistStore} from 'redux-persist';
+import {PersistGate} from 'redux-persist/es/integration/react';
 
 import {MainContainer} from './styles';
-
-import Main from './screens/Main';
-import Login from './screens/Login';
-import Contacts from './screens/Contacts';
-import ChatList from './screens/ChatList';
-import Profile from './screens/Profile';
-import Settings from './screens/Settings';
-import ChatRoom from './screens/ChatRoom';
 
 import Screens from './navigations';
 
 const App = () => {
+  const persitedStore = persistStore(store);
   return (
-    <MainContainer>
-      <Screens />
-    </MainContainer>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persitedStore}>
+        <MainContainer>
+          <Screens />
+        </MainContainer>
+      </PersistGate>
+    </Provider>
   );
 };
 
