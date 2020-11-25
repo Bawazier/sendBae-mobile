@@ -1,6 +1,7 @@
 const initialState = {
   data: [],
   dataList: [],
+  recipientId: 0,
   isLoading: false,
   isError: false,
   alertMsg: '',
@@ -71,6 +72,12 @@ export default (state = initialState, action) => {
         isLoading: false,
         isError: false,
         dataList: action.payload.data.results,
+      };
+    }
+    case 'GET_RECIPIENT_ID': {
+      return {
+        ...state,
+        recipientId: action.payload,
       };
     }
     default: {

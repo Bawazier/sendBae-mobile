@@ -1,6 +1,9 @@
+import jwt_decode from 'jwt-decode';
+
 const initialState = {
   token: '',
   tokenTemporary: '',
+  decoded: {},
   isLoading: false,
   isError: false,
   alertMsg: '',
@@ -29,6 +32,9 @@ export default (state = initialState, action) => {
         isError: false,
         token: action.payload.data.token || '',
         tokenTemporary: action.payload.data.tokenTemporary || '',
+        decoded: jwt_decode(
+          action.payload.data.token || action.payload.data.tokenTemporary,
+        ),
       };
     }
     case 'SIGNUP': {
@@ -44,6 +50,7 @@ export default (state = initialState, action) => {
         ...state,
         token: '',
         tokenTemporary: '',
+        decoded: {},
         isLoading: false,
         isError: false,
         alertMsg: '',

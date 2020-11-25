@@ -17,4 +17,8 @@ export default {
     type: 'GET_MESSAGE_LIST',
     payload: http(token).get('message/list'),
   }),
+  getRecipiendId: (id) => ({
+    type: 'GET_RECIPIENT_ID',
+    payload: id,
+  }),
 };
