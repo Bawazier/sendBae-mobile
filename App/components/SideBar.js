@@ -1,4 +1,5 @@
 import React from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   View,
   Icon,
@@ -11,7 +12,11 @@ import {
   Thumbnail,
 } from 'native-base';
 
+//Actions
+import AuthActions from '../redux/actions/auth';
+
 const SideBar = ({navigation}) => {
+  const dispatch = useDispatch();
   return (
     <View style={{backgroundColor: '#152642', flex: 1}}>
       <View style={{backgroundColor: '#62B1F6', paddingVertical: 20}}>
@@ -80,6 +85,21 @@ const SideBar = ({navigation}) => {
             </Left>
             <Body style={{borderBottomWidth: 0}}>
               <Text style={{color: '#e6e9ef'}}>Settings</Text>
+            </Body>
+          </ListItem>
+          <ListItem
+            avatar
+            style={{height: 60}}
+            onPress={() => dispatch(AuthActions.logout())}>
+            <Left>
+              <Icon
+                name="sign-out"
+                type="FontAwesome"
+                style={{fontSize: 30, color: '#F01F0E', width: 40}}
+              />
+            </Left>
+            <Body style={{borderBottomWidth: 0}}>
+              <Text style={{color: '#F01F0E'}}>LOGOUT</Text>
             </Body>
           </ListItem>
         </List>

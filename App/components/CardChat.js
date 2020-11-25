@@ -21,7 +21,7 @@ const CardChat = (props) => {
           <Body>
             <Text style={{color: '#e6e9ef'}}>{props.message}</Text>
             <Text note style={{color: '#767d92', alignSelf: 'flex-end'}}>
-              9:12 PM
+              {props.messageTime}
             </Text>
           </Body>
         </CardItem>
