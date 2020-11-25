@@ -6,4 +6,12 @@ export default {
     type: 'LOGIN',
     payload: http().post('auth/', qs.stringify(data)),
   }),
+
+  signUp: () => ({
+    type: 'SIGNUP',
+  }),
+
+  logout: () => ({
+    type: 'LOGOUT',
+  }),
 };
