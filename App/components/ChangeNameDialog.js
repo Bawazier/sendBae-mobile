@@ -26,11 +26,11 @@ const ChangeNameDialog = (props) => {
       }}
       validationSchema={validationSchema}
       onSubmit={async (values) => {
-        console.log(values.firstName);
         const data = {
           firstName: values.firstName,
           lastName: values.lastName,
         };
+        console.log(data);
         await dispatch(ProfileActions.patchProfile(auth.token, data));
         dispatch(ProfileActions.getProfile(auth.token));
       }}>
@@ -52,22 +52,24 @@ const ChangeNameDialog = (props) => {
             </Dialog.Title>
 
             <Form>
-              <Item floatingLabel style={{borderBottomColor: '#2f4562'}}>
+              <Item stackedLabel style={{borderBottomColor: '#2f4562'}}>
                 <Label style={{color: '#2f4562'}}>First Name</Label>
                 <Input
                   name="firstName"
                   onChangeText={handleChange('firstName')}
                   onBlur={handleBlur('firstName')}
                   value={values.firstName}
+                  style={{color: '#e6e9ef'}}
                 />
               </Item>
-              <Item floatingLabel style={{borderBottomColor: '#2f4562'}}>
+              <Item stackedLabel style={{borderBottomColor: '#2f4562'}}>
                 <Label style={{color: '#2f4562'}}>Last Name</Label>
                 <Input
                   name="lastName"
                   onChangeText={handleChange('lastName')}
                   onBlur={handleBlur('lastName')}
                   value={values.lastName}
+                  style={{color: '#e6e9ef'}}
                 />
               </Item>
             </Form>
@@ -80,6 +82,7 @@ const ChangeNameDialog = (props) => {
             <Dialog.Button
               label="CREATE"
               color="#62B1F6"
+              onTouchEnd={props.handleCancel}
               onPress={handleSubmit}
               title="Submit"
               {...(isSubmitting ? 'disabled' : null)}

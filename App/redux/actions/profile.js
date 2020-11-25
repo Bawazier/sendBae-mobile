@@ -8,10 +8,10 @@ export default {
   }),
   patchProfile: (token, data) => ({
     type: 'PATCH_PROFILE',
-    payload: http(token).patch('profile/', data),
+    payload: http(token).patch('profile/', qs.stringify(data)),
   }),
   putPhoneNumber: (token, data) => ({
     type: 'PUT_PROFILE',
-    payload: http(token).put('profile/', data),
+    payload: http(token).put('profile/', qs.stringify(data)),
   }),
 };

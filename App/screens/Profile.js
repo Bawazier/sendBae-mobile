@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
 import {
   Content,
   View,
@@ -31,6 +33,10 @@ const Profile = () => {
   const auth = useSelector((state) => state.auth);
   const profile = useSelector((state) => state.profile);
   const dispatch = useDispatch();
+
+  const validationSchema = Yup.object({
+    bio: Yup.string(),
+  });
 
   const selectImage = () => {
     let options = {
@@ -188,20 +194,52 @@ const Profile = () => {
           </ListItem>
         </List>
       </View>
-      <View
-        style={{
-          backgroundColor: '#152642',
-          height: '100%',
-          padding: 10,
+      <Formik
+        initialValues={{
+          bio: profile.data[0].bio || '',
+        }}
+        validationSchema={validationSchema}
+        onSubmit={async (values) => {
+          const data = {
+            bio: values.bio,
+          };
+          console.log(data);
+          await dispatch(ProfileActions.patchProfile(auth.token, data));
+          dispatch(ProfileActions.getProfile(auth.token));
         }}>
-        <Item style={{marginVertical: 10, borderColor: '#2f4562'}}>
-          <Input placeholder="Bio" style={{color: '#e6e9ef'}} />
-        </Item>
-        <Text note style={{color: '#2f4562'}}>
-          Any details such as age, occupation or city, Example: 23 y.o designer
-          from San Francisco
-        </Text>
-      </View>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+          touched,
+          values,
+          errors,
+        }) => (
+          <View
+            style={{
+              backgroundColor: '#152642',
+              height: '100%',
+              padding: 10,
+            }}>
+            <Item style={{marginVertical: 10, borderColor: '#2f4562'}}>
+              <Input
+                name="bio"
+                onChangeText={handleChange('bio')}
+                onBlur={handleBlur('bio')}
+                value={values.bio}
+                onSubmitEditing={handleSubmit}
+                placeholder="Bio"
+                style={{color: '#e6e9ef'}}
+              />
+            </Item>
+            <Text note style={{color: '#2f4562'}}>
+              Any details such as age, occupation or city, Example: 23 y.o
+              designer from San Francisco
+            </Text>
+          </View>
+        )}
+      </Formik>
       <ChangeNameDialog
         visible={changeName}
         handleCancel={() => setChangeName(!changeName)}
