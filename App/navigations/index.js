@@ -1,5 +1,5 @@
 import React from 'react';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 
 import Main from '../screens/Main';
 import Login from '../screens/Login';
@@ -30,6 +30,9 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+//Actions
+import AuthActions from '../redux/actions/auth';
+
 const AuthStack = () => {
   return (
     <Stack.Navigator>
@@ -48,6 +51,14 @@ const AuthStack = () => {
           headerTransparent: true,
         }}
       />
+    </Stack.Navigator>
+  );
+};
+
+const ProfileStack = () => {
+  const dispatch = useDispatch();
+  return (
+    <Stack.Navigator>
       <Stack.Screen
         name="Profile"
         component={Profile}
@@ -57,7 +68,10 @@ const AuthStack = () => {
           headerStyle: {backgroundColor: '#152642', height: 50},
           headerLeft: () => <Text>&nbsp;</Text>,
           headerRight: () => (
-            <Button info style={{color: '#fff', width: 150, height: 50}}>
+            <Button
+              info
+              style={{color: '#fff', width: 150, height: 50}}
+              onPress={() => dispatch(AuthActions.signUp())}>
               <Text>START</Text>
               <Icon name="long-arrow-right" type="FontAwesome" />
             </Button>
@@ -198,14 +212,18 @@ const Navigations = () => {
   const auth = useSelector((state) => state.auth);
   return (
     <NavigationContainer>
-      {!auth.token.length ? (
-        <AuthStack />
-      ) : (
-        <Drawer.Navigator initialRouteName="Home" drawerContent={SideBar}>
+      {auth.token.length ? (
+        <Drawer.Navigator
+          initialRouteName="Home"
+          drawerContent={(props) => <SideBar {...props} />}>
           <Drawer.Screen name="Home" component={ChatStack} />
           <Drawer.Screen name="Contacts" component={ContactStack} />
           <Drawer.Screen name="Settings" component={SettingStack} />
         </Drawer.Navigator>
+      ) : auth.tokenTemporary.length ? (
+        <ProfileStack />
+      ) : (
+        <AuthStack />
       )}
     </NavigationContainer>
   );
