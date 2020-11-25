@@ -2,6 +2,7 @@ import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {format} from 'date-fns';
 import {Content, Footer, Icon, Input, Item, Text} from 'native-base';
 import {FlatList} from 'react-native';
 import CardChat from '../components/CardChat';
@@ -50,7 +51,7 @@ const ChatRoom = () => {
         dispatch(
           MessageActions.postMessage(
             auth.token,
-            message.data[0].Users.id,
+            message.data[0].User.id,
             imageData,
           ),
         );
@@ -68,7 +69,7 @@ const ChatRoom = () => {
         )}
         {!message.isLoading && message.isError && (
           <Text note style={{color: '#F01F0E'}}>
-            Bad connection. Please try again
+            &nbsp;
           </Text>
         )}
         {!message.isLoading && !message.isError && (
@@ -76,9 +77,10 @@ const ChatRoom = () => {
             data={message.data}
             renderItem={({item}) => (
               <CardChat
-                message={item.send || item.reply}
-                messageColor={item.send ? '#152642' : '#2f4562'}
-                messagePosition={!item.send}
+                message={item.message}
+                messageTime={format(new Date(item.createdAt), 'k.mm aaa')}
+                messageColor={item.sender ? '#152642' : '#2f4562'}
+                messagePosition={!item.sender}
               />
             )}
             keyExtractor={(item) => item.id}

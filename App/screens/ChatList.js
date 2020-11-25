@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {format} from 'date-fns';
 import {FlatList} from 'react-native';
 import {
   Content,
@@ -17,6 +18,7 @@ import {
   Thumbnail,
   Badge,
 } from 'native-base';
+import {API_URL} from '@env';
 
 //Actions
 import MessageActions from '../redux/actions/message';
@@ -79,28 +81,38 @@ const ChatList = ({navigation}) => {
           <FlatList
             data={message.dataList}
             renderItem={({item}) => (
-              <ListItem avatar onPress={() => handlePressList}>
+              <ListItem avatar onPress={() => handlePressList(item.sender)}>
                 <Left>
                   <Thumbnail
-                    source={{
-                      uri: item.imageUser,
-                    }}
+                    source={
+                      item.userRecipient.photo
+                        ? {
+                            uri: API_URL + item.userRecipient.photo,
+                          }
+                        : {
+                            uri:
+                              'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+                          }
+                    }
                   />
                 </Left>
-                <Body style={{borderBottomWidth: 0}}>
-                  <Text style={{color: '#e6e9ef'}}>{item.nameUser}</Text>
+                <Body style={{borderBottomWidth: 0, alignSelf: 'flex-start'}}>
+                  <Text style={{color: '#e6e9ef'}}>
+                    {item.userRecipient.firstName || 'Anonym'}{' '}
+                    {item.userRecipient.lastName || 'User'}
+                  </Text>
                   <Text note style={{color: '#767d92'}}>
-                    {item.newMessage > 20
-                      ? item.newMessage
-                      : item.newMessage.concat('...')}
+                    {item.message.length < 20
+                      ? item.message
+                      : item.message.slice(0, 20).concat('...')}
                   </Text>
                 </Body>
                 <Right style={{borderBottomWidth: 0}}>
                   <Text note style={{color: '#767d92'}}>
-                    {item.timeMessage}
+                    {format(new Date(item.createdAt), 'k.mm.s aaa')}
                   </Text>
                   <Badge info style={{marginVertical: 10}}>
-                    <Text>{item.newMessageCount}</Text>
+                    <Text>{item.read ? null : '1'}</Text>
                   </Badge>
                 </Right>
               </ListItem>

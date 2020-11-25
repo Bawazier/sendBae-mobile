@@ -4,8 +4,6 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {View, Text, Button, Item, Input, Form} from 'native-base';
 
-import {useNavigation} from '@react-navigation/native';
-
 //Components
 import CountryDialog from '../components/CountryDialog';
 
@@ -19,7 +17,6 @@ const Login = () => {
   const [countryCode, setCountryCode] = useState('+62');
   const country = useSelector((state) => state.country);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const validationSchema = Yup.object({
     phoneNumber: Yup.number()
@@ -58,7 +55,6 @@ const Login = () => {
           phoneNumber: values.phoneNumber,
         };
         dispatch(AuthActions.login(data));
-        // navigation.navigate('Profile');
       }}>
       {({
         handleChange,
