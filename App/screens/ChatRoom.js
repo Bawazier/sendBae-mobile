@@ -49,11 +49,9 @@ const ChatRoom = () => {
           path: response.path,
         });
         dispatch(
-          MessageActions.postMessage(
-            auth.token,
-            message.data[0].User.id,
-            imageData,
-          ),
+          MessageActions.postMessage(auth.token, message.recipientId, {
+            image: imageData,
+          }),
         );
       }
     });
@@ -62,11 +60,6 @@ const ChatRoom = () => {
   return (
     <>
       <Content style={{backgroundColor: '#081b33'}}>
-        {message.isLoading && !message.isError && (
-          <Text note style={{color: '#767d92'}}>
-            Loading....
-          </Text>
-        )}
         {!message.isLoading && message.isError && (
           <Text note style={{color: '#F01F0E'}}>
             &nbsp;
@@ -75,12 +68,20 @@ const ChatRoom = () => {
         {!message.isLoading && !message.isError && (
           <FlatList
             data={message.data}
+            // inverted
             renderItem={({item}) => (
               <CardChat
-                message={item.message}
+                message={item.Images.length ? false : item.message}
+                messageImage={
+                  item.Images.length
+                    ? item.Images.map((item) => item.image)
+                    : false
+                }
                 messageTime={format(new Date(item.createdAt), 'k.mm aaa')}
-                messageColor={item.sender ? '#152642' : '#2f4562'}
-                messagePosition={!item.sender}
+                messageColor={
+                  item.sender !== auth.decoded.id ? '#152642' : '#2f4562'
+                }
+                messagePosition={item.sender === auth.decoded.id}
               />
             )}
             keyExtractor={(item) => item.id}
@@ -92,17 +93,17 @@ const ChatRoom = () => {
           message: '',
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
+        onSubmit={async (values, {resetForm}) => {
+          console.log(message.recipientId);
           const data = {
             message: values.message,
           };
-          dispatch(
-            MessageActions.postMessage(
-              auth.token,
-              message.data[0].Users.id,
-              data,
-            ),
+          resetForm('');
+          await dispatch(
+            MessageActions.postMessage(auth.token, message.recipientId, data),
           );
+          dispatch(MessageActions.getMessage(auth.token, message.recipientId));
+          dispatch(MessageActions.getMessageList(auth.token));
         }}>
         {({
           handleChange,
@@ -113,12 +114,18 @@ const ChatRoom = () => {
           values,
           errors,
         }) => (
-          <Footer style={{backgroundColor: '#152642'}}>
+          <Footer
+            style={{
+              backgroundColor: '#152642',
+              height: 'auto',
+            }}>
             <Item
               style={{
                 backgroundColor: '#152642',
                 width: '100%',
                 borderBottomWidth: 0,
+                alignItems: 'flex-end',
+                marginBottom: 5,
               }}>
               <Icon
                 name="paperclip"
@@ -132,6 +139,7 @@ const ChatRoom = () => {
                 onBlur={handleBlur('message')}
                 value={values.message}
                 autoFocus
+                multiline
                 placeholder="Write a message..."
                 style={{color: '#fff'}}
               />

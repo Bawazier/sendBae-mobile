@@ -22,7 +22,8 @@ const Login = () => {
     phoneNumber: Yup.number()
       .integer('Invalid phone number. Please try again.')
       .min(1000000000, 'Invalid phone number. Please try again.')
-      .max(99999999999, 'Invalid phone number. Please try again.'),
+      .max(99999999999, 'Invalid phone number. Please try again.')
+      .required(),
   });
 
   const onSelectCountry = async () => {

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Content,
   View,
@@ -20,10 +21,16 @@ import ChangeNameDialog from '../components/ChangeNameDialog';
 import ChangePhoneDialog from '../components/ChangePhoneDialog';
 import ChangeUsernameDialog from '../components/ChangeUsernameDialog';
 
+//Actions
+import ProfileActions from '../redux/actions/profile';
+
 const Profile = () => {
   const [changeName, setChangeName] = useState(false);
   const [changePhone, setChangePhone] = useState(false);
   const [changeUsername, setChangeUsername] = useState(false);
+  const auth = useSelector((state) => state.auth);
+  const profile = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
 
   const selectImage = () => {
     let options = {
@@ -47,15 +54,16 @@ const Profile = () => {
       } else {
         let source = {uri: response.uri};
         const imageData = new FormData();
-        imageData.append('picture', {
+        imageData.append('photo', {
           uri: response.uri,
           type: response.type,
           name: response.fileName,
           path: response.path,
         });
-        console.log(imageData);
+        dispatch(ProfileActions.patchProfile(auth.token, imageData));
       }
     });
+    return dispatch(ProfileActions.getProfile(auth.token));
   };
 
   return (
@@ -69,10 +77,16 @@ const Profile = () => {
           alignItems: 'center',
         }}>
         <Thumbnail
-          source={{
-            uri:
-              'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-          }}
+          source={
+            profile.data[0].photo
+              ? {
+                  uri: profile.data[0].URL_photo,
+                }
+              : {
+                  uri:
+                    'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+                }
+          }
           style={{
             width: 100,
             height: 100,
@@ -107,7 +121,10 @@ const Profile = () => {
               />
             </Left>
             <Body style={{borderBottomWidth: 0}}>
-              <Text style={{color: '#e6e9ef'}}>Kumar Pratik</Text>
+              <Text style={{color: '#e6e9ef'}}>
+                {profile.data[0].firstName || 'Please change'}{' '}
+                {profile.data[0].lastName || 'Your Name'}
+              </Text>
               <Text note style={{color: '#2f4562'}}>
                 Name
               </Text>
@@ -129,7 +146,10 @@ const Profile = () => {
               />
             </Left>
             <Body style={{borderBottomWidth: 0}}>
-              <Text style={{color: '#e6e9ef'}}>+62 85156797295</Text>
+              <Text style={{color: '#e6e9ef'}}>
+                {profile.data[0].Country.code || 'Your'}{' '}
+                {profile.data[0].phoneNumber || 'Number'}
+              </Text>
               <Text note style={{color: '#2f4562'}}>
                 Phone number
               </Text>
@@ -151,7 +171,9 @@ const Profile = () => {
               />
             </Left>
             <Body style={{borderBottomWidth: 0}}>
-              <Text style={{color: '#e6e9ef'}}>@ba_wazieer</Text>
+              <Text style={{color: '#e6e9ef'}}>
+                {profile.data[0].username || 'Please change Your Username'}
+              </Text>
               <Text note style={{color: '#2f4562'}}>
                 Username
               </Text>

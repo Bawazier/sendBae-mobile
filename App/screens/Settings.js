@@ -1,4 +1,6 @@
 import React from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {format} from 'date-fns';
 import {
   Content,
   View,
@@ -16,6 +18,8 @@ import {
 } from 'native-base';
 
 const Settings = ({navigation}) => {
+  const auth = useSelector((state) => state.auth);
+  const profile = useSelector((state) => state.profile);
   return (
     <Content
       style={{
@@ -32,17 +36,24 @@ const Settings = ({navigation}) => {
           <ListItem avatar>
             <Left>
               <Thumbnail
-                source={{
-                  uri:
-                    'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-                }}
+                source={
+                  profile.data[0].photo
+                    ? {uri: profile.data[0].URL_photo}
+                    : {
+                        uri:
+                          'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+                      }
+                }
                 style={{width: 80, height: 80, borderRadius: 80}}
               />
             </Left>
             <Body style={{borderBottomWidth: 0}}>
-              <Text style={{color: '#e6e9ef'}}>Kumar Pratik</Text>
+              <Text style={{color: '#e6e9ef'}}>
+                {profile.data[0].firstName} {profile.data[0].lastName}
+              </Text>
               <Text note style={{color: '#2f4562'}}>
-                last seen today at 9:06 PM
+                last seen{' '}
+                {format(new Date(auth.decoded.iat * 1000), 'BBBB kk.mm a')}
               </Text>
             </Body>
           </ListItem>
