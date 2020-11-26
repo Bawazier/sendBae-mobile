@@ -82,6 +82,7 @@ const ChatRoom = () => {
                   item.sender !== auth.decoded.id ? '#152642' : '#2f4562'
                 }
                 messagePosition={item.sender === auth.decoded.id}
+                read={item.read}
               />
             )}
             keyExtractor={(item) => item.id}
