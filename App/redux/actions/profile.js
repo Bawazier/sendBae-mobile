@@ -6,6 +6,10 @@ export default {
     type: 'GET_PROFILE',
     payload: http(token).get('profile/'),
   }),
+  getProfileId: (token, id) => ({
+    type: 'GET_PROFILE_ID',
+    payload: http(token).get(`profile/${id}`),
+  }),
   patchProfile: (token, data) => ({
     type: 'PATCH_PROFILE',
     payload: http(token).patch('profile/', qs.stringify(data)),

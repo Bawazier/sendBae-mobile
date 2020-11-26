@@ -1,5 +1,4 @@
 const initialState = {
-  data: [],
   isLoading: false,
   isError: false,
   alertMsg: '',
@@ -7,13 +6,13 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'GET_PROFILE_PENDING': {
+    case 'POST_CONTACT_PENDING': {
       return {
         ...state,
         isLoading: true,
       };
     }
-    case 'GET_PROFILE_REJECTED': {
+    case 'POST_CONTACT_REJECTED': {
       return {
         ...state,
         isLoading: false,
@@ -21,42 +20,20 @@ export default (state = initialState, action) => {
         alertMsg: action.payload,
       };
     }
-    case 'GET_PROFILE_FULFILLED': {
-      return {
-        ...state,
-        isLoading: false,
-        isError: false,
-        data: action.payload.data.results,
-      };
-    }
-    case 'PATCH_PROFILE_PENDING': {
-      return {
-        ...state,
-        isLoading: true,
-      };
-    }
-    case 'PATCH_PROFILE_REJECTED': {
-      return {
-        ...state,
-        isLoading: false,
-        isError: true,
-        alertMsg: action.payload,
-      };
-    }
-    case 'PATCH_PROFILE_FULFILLED': {
+    case 'POST_CONTACT_FULFILLED': {
       return {
         ...state,
         isLoading: false,
         isError: false,
       };
     }
-    case 'PUT_PROFILE_PENDING': {
+    case 'PATCH_CONTACT_PENDING': {
       return {
         ...state,
         isLoading: true,
       };
     }
-    case 'PUT_PROFILE_REJECTED': {
+    case 'PATCH_CONTACT_REJECTED': {
       return {
         ...state,
         isLoading: false,
@@ -64,7 +41,7 @@ export default (state = initialState, action) => {
         alertMsg: action.payload,
       };
     }
-    case 'PUT_PROFILE_FULFILLED': {
+    case 'PATCH_CONTACT_FULFILLED': {
       return {
         ...state,
         isLoading: false,
