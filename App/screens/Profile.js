@@ -36,12 +36,9 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (
-      !dataProfile.isLoading &&
-      !dataProfile.isError &&
-      auth.tokenTemporary.length
-    ) {
+    if (!auth.isLoading && !auth.isError && auth.tokenTemporary) {
       dispatch(ProfileActions.getProfile(auth.tokenTemporary));
+      console.log(auth.tokenTemporary);
     }
   }, []);
 
@@ -93,196 +90,200 @@ const Profile = () => {
 
   return (
     <>
-      {!dataProfile.isLoading && !dataProfile.isError && (
-        <Content
-          style={{
-            backgroundColor: '#2f4562',
-          }}>
-          <View
+      {!dataProfile.isLoading &&
+        !dataProfile.isError &&
+        dataProfile.data.map((item) => (
+          <Content
             style={{
-              justifyContent: 'center',
-              alignItems: 'center',
+              backgroundColor: '#2f4562',
             }}>
-            <Thumbnail
-              source={
-                dataProfile.data[0].photo
-                  ? {
-                      uri: dataProfile.data[0].URL_photo,
-                    }
-                  : {
-                      uri:
-                        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-                    }
-              }
+            <View
               style={{
-                width: 100,
-                height: 100,
-                borderRadius: 100,
-                marginVertical: 20,
-              }}
-            />
-            <Button
-              rounded
-              onPress={selectImage}
-              style={{
-                backgroundColor: '#4995be',
-                color: '#e6e9ef',
-                alignSelf: 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-              <Text>SET PROFILE PHOTO</Text>
-            </Button>
-          </View>
-          <View
-            style={{
-              backgroundColor: '#152642',
-              paddingVertical: 20,
-              marginVertical: 10,
-            }}>
-            <List>
-              <ListItem avatar onPress={() => setChangeName(true)}>
-                <Left>
-                  <Icon
-                    name="user"
-                    type="FontAwesome"
-                    style={{fontSize: 35, color: '#2f4562', width: 35}}
-                  />
-                </Left>
-                <Body style={{borderBottomWidth: 0}}>
-                  <Text style={{color: '#e6e9ef'}}>
-                    {dataProfile.data[0].firstName || 'Please change'}{' '}
-                    {dataProfile.data[0].lastName || 'Your Name'}
-                  </Text>
-                  <Text note style={{color: '#2f4562'}}>
-                    Name
-                  </Text>
-                </Body>
-                <Right style={{borderBottomWidth: 0, justifyContent: 'center'}}>
-                  <Icon
-                    name="pencil"
-                    type="FontAwesome"
-                    style={{fontSize: 20, color: '#e6e9ef', width: 20}}
-                  />
-                </Right>
-              </ListItem>
-              <ListItem avatar onPress={() => setChangePhone(true)}>
-                <Left>
-                  <Icon
-                    name="phone"
-                    type="FontAwesome"
-                    style={{fontSize: 35, color: '#2f4562', width: 35}}
-                  />
-                </Left>
-                <Body style={{borderBottomWidth: 0}}>
-                  <Text style={{color: '#e6e9ef'}}>
-                    {dataProfile.data[0].Country.code || 'Your'}{' '}
-                    {dataProfile.data[0].phoneNumber || 'Number'}
-                  </Text>
-                  <Text note style={{color: '#2f4562'}}>
-                    Phone number
-                  </Text>
-                </Body>
-                <Right style={{borderBottomWidth: 0, justifyContent: 'center'}}>
-                  <Icon
-                    name="pencil"
-                    type="FontAwesome"
-                    style={{fontSize: 20, color: '#e6e9ef', width: 20}}
-                  />
-                </Right>
-              </ListItem>
-              <ListItem avatar onPress={() => setChangeUsername(true)}>
-                <Left>
-                  <Icon
-                    name="at"
-                    type="FontAwesome"
-                    style={{fontSize: 35, color: '#2f4562', width: 35}}
-                  />
-                </Left>
-                <Body style={{borderBottomWidth: 0}}>
-                  <Text style={{color: '#e6e9ef'}}>
-                    {dataProfile.data[0].username ||
-                      'Please change Your Username'}
-                  </Text>
-                  <Text note style={{color: '#2f4562'}}>
-                    Username
-                  </Text>
-                </Body>
-                <Right style={{borderBottomWidth: 0, justifyContent: 'center'}}>
-                  <Icon
-                    name="pencil"
-                    type="FontAwesome"
-                    style={{fontSize: 20, color: '#e6e9ef', width: 20}}
-                  />
-                </Right>
-              </ListItem>
-            </List>
-          </View>
-          <Formik
-            initialValues={{
-              bio: dataProfile.data[0].bio || '',
-            }}
-            validationSchema={validationSchema}
-            onSubmit={async (values) => {
-              const data = {
-                bio: values.bio,
-              };
-              console.log(data);
-              await dispatch(
-                ProfileActions.patchProfile(
-                  auth.token || auth.tokenTemporary,
-                  data,
-                ),
-              );
-              dispatch(
-                ProfileActions.getProfile(auth.token || auth.tokenTemporary),
-              );
-            }}>
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values,
-              errors,
-            }) => (
-              <View
+              <Thumbnail
+                source={
+                  item.photo
+                    ? {
+                        uri: item.URL_photo,
+                      }
+                    : {
+                        uri:
+                          'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+                      }
+                }
                 style={{
-                  backgroundColor: '#152642',
-                  height: '100%',
-                  padding: 10,
+                  width: 100,
+                  height: 100,
+                  borderRadius: 100,
+                  marginVertical: 20,
+                }}
+              />
+              <Button
+                rounded
+                onPress={selectImage}
+                style={{
+                  backgroundColor: '#4995be',
+                  color: '#e6e9ef',
+                  alignSelf: 'center',
                 }}>
-                <Item style={{marginVertical: 10, borderColor: '#2f4562'}}>
-                  <Input
-                    name="bio"
-                    onChangeText={handleChange('bio')}
-                    onBlur={handleBlur('bio')}
-                    value={values.bio}
-                    onSubmitEditing={handleSubmit}
-                    placeholder="Bio"
-                    style={{color: '#e6e9ef'}}
-                  />
-                </Item>
-                <Text note style={{color: '#2f4562'}}>
-                  Any details such as age, occupation or city, Example: 23 y.o
-                  designer from San Francisco
-                </Text>
-              </View>
-            )}
-          </Formik>
-          <ChangeNameDialog
-            visible={changeName}
-            handleCancel={() => setChangeName(!changeName)}
-          />
-          <ChangePhoneDialog
-            visible={changePhone}
-            handleCancel={() => setChangePhone(!changePhone)}
-          />
-          <ChangeUsernameDialog
-            visible={changeUsername}
-            handleCancel={() => setChangeUsername(!changeUsername)}
-          />
-        </Content>
-      )}
+                <Text>SET PROFILE PHOTO</Text>
+              </Button>
+            </View>
+            <View
+              style={{
+                backgroundColor: '#152642',
+                paddingVertical: 20,
+                marginVertical: 10,
+              }}>
+              <List>
+                <ListItem avatar onPress={() => setChangeName(true)}>
+                  <Left>
+                    <Icon
+                      name="user"
+                      type="FontAwesome"
+                      style={{fontSize: 35, color: '#2f4562', width: 35}}
+                    />
+                  </Left>
+                  <Body style={{borderBottomWidth: 0}}>
+                    <Text style={{color: '#e6e9ef'}}>
+                      {item.firstName || 'Please change'}{' '}
+                      {item.lastName || 'Your Name'}
+                    </Text>
+                    <Text note style={{color: '#2f4562'}}>
+                      Name
+                    </Text>
+                  </Body>
+                  <Right
+                    style={{borderBottomWidth: 0, justifyContent: 'center'}}>
+                    <Icon
+                      name="pencil"
+                      type="FontAwesome"
+                      style={{fontSize: 20, color: '#e6e9ef', width: 20}}
+                    />
+                  </Right>
+                </ListItem>
+                <ListItem avatar onPress={() => setChangePhone(true)}>
+                  <Left>
+                    <Icon
+                      name="phone"
+                      type="FontAwesome"
+                      style={{fontSize: 35, color: '#2f4562', width: 35}}
+                    />
+                  </Left>
+                  <Body style={{borderBottomWidth: 0}}>
+                    <Text style={{color: '#e6e9ef'}}>
+                      {item.Country.code || 'Your'}{' '}
+                      {item.phoneNumber || 'Number'}
+                    </Text>
+                    <Text note style={{color: '#2f4562'}}>
+                      Phone number
+                    </Text>
+                  </Body>
+                  <Right
+                    style={{borderBottomWidth: 0, justifyContent: 'center'}}>
+                    <Icon
+                      name="pencil"
+                      type="FontAwesome"
+                      style={{fontSize: 20, color: '#e6e9ef', width: 20}}
+                    />
+                  </Right>
+                </ListItem>
+                <ListItem avatar onPress={() => setChangeUsername(true)}>
+                  <Left>
+                    <Icon
+                      name="at"
+                      type="FontAwesome"
+                      style={{fontSize: 35, color: '#2f4562', width: 35}}
+                    />
+                  </Left>
+                  <Body style={{borderBottomWidth: 0}}>
+                    <Text style={{color: '#e6e9ef'}}>
+                      {item.username || 'Please change Your Username'}
+                    </Text>
+                    <Text note style={{color: '#2f4562'}}>
+                      Username
+                    </Text>
+                  </Body>
+                  <Right
+                    style={{borderBottomWidth: 0, justifyContent: 'center'}}>
+                    <Icon
+                      name="pencil"
+                      type="FontAwesome"
+                      style={{fontSize: 20, color: '#e6e9ef', width: 20}}
+                    />
+                  </Right>
+                </ListItem>
+              </List>
+            </View>
+            <Formik
+              initialValues={{
+                bio: item.bio || '',
+              }}
+              validationSchema={validationSchema}
+              onSubmit={async (values) => {
+                const data = {
+                  bio: values.bio,
+                };
+                console.log(data);
+                await dispatch(
+                  ProfileActions.patchProfile(
+                    auth.token || auth.tokenTemporary,
+                    data,
+                  ),
+                );
+                dispatch(
+                  ProfileActions.getProfile(auth.token || auth.tokenTemporary),
+                );
+              }}>
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+                touched,
+                values,
+                errors,
+              }) => (
+                <View
+                  style={{
+                    backgroundColor: '#152642',
+                    height: '100%',
+                    padding: 10,
+                  }}>
+                  <Item style={{marginVertical: 10, borderColor: '#2f4562'}}>
+                    <Input
+                      name="bio"
+                      onChangeText={handleChange('bio')}
+                      onBlur={handleBlur('bio')}
+                      value={values.bio}
+                      onSubmitEditing={handleSubmit}
+                      placeholder="Bio"
+                      style={{color: '#e6e9ef'}}
+                    />
+                  </Item>
+                  <Text note style={{color: '#2f4562'}}>
+                    Any details such as age, occupation or city, Example: 23 y.o
+                    designer from San Francisco
+                  </Text>
+                </View>
+              )}
+            </Formik>
+            <ChangeNameDialog
+              visible={changeName}
+              handleCancel={() => setChangeName(!changeName)}
+            />
+            <ChangePhoneDialog
+              visible={changePhone}
+              handleCancel={() => setChangePhone(!changePhone)}
+            />
+            <ChangeUsernameDialog
+              visible={changeUsername}
+              handleCancel={() => setChangeUsername(!changeUsername)}
+            />
+          </Content>
+        ))}
     </>
   );
 };
