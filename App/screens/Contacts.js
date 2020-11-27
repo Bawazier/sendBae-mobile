@@ -38,10 +38,10 @@ const Contacts = ({navigation}) => {
     dispatch(ContactActions.getContact(auth.token));
   }, []);
 
-  const handlePressList = async (id) => {
+  const handlePressList = (id) => {
     dispatch(MessageActions.getRecipiendId(id));
-    await dispatch(MessageActions.getMessage(auth.token, id));
-    await dispatch(ProfileActions.getProfileId(auth.token, id));
+    dispatch(MessageActions.getMessage(auth.token, id));
+    dispatch(ProfileActions.getProfileId(auth.token, id));
     navigation.navigate('ChatRoom');
   };
 
