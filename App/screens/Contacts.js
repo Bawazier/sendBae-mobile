@@ -41,7 +41,7 @@ const Contacts = ({navigation}) => {
   const handlePressList = async (id) => {
     dispatch(MessageActions.getRecipiendId(id));
     await dispatch(MessageActions.getMessage(auth.token, id));
-    // await dispatch(ProfileActions.getProfileId(auth.token, id));
+    await dispatch(ProfileActions.getProfileId(auth.token, id));
     navigation.navigate('ChatRoom');
   };
 

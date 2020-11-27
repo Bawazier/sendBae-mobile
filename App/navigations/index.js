@@ -21,6 +21,7 @@ import {
   Picker,
   Thumbnail,
 } from 'native-base';
+import {API_URL} from '@env';
 
 import SideBar from '../components/SideBar';
 
@@ -111,7 +112,7 @@ const ChatStack = () => {
                       source={
                         dataIdProfile.data.photo
                           ? {
-                              uri: dataIdProfile.data.URL_photo,
+                              uri: API_URL + dataIdProfile.data.photo,
                             }
                           : {
                               uri:

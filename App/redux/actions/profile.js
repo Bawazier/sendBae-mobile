@@ -8,7 +8,7 @@ export default {
   }),
   getProfileId: (token, id) => ({
     type: 'GET_PROFILE_ID',
-    payload: http(token).get(`profile/${id}`),
+    payload: http(token).get(`profile/info/${id}`),
   }),
   patchProfile: (token, data) => ({
     type: 'PATCH_PROFILE',
