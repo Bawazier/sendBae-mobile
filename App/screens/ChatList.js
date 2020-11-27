@@ -26,7 +26,7 @@ import ProfileActions from '../redux/actions/profile';
 
 const ChatList = ({navigation}) => {
   const auth = useSelector((state) => state.auth);
-  const message = useSelector((state) => state.message);
+  const message = useSelector((state) => state.listMessage);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const ChatList = ({navigation}) => {
   const handlePressList = async (id) => {
     dispatch(MessageActions.getRecipiendId(id));
     await dispatch(MessageActions.getMessage(auth.token, id));
-    dispatch(MessageActions.getMessageList(auth.token));
+    // await dispatch(ProfileActions.getProfileId(auth.token, parseInt(id)));
     navigation.navigate('ChatRoom');
   };
 
@@ -65,6 +65,9 @@ const ChatList = ({navigation}) => {
             style={{color: '#2f4562', fontSize: 15}}
           />
           <Input
+            onChangeText={(text) =>
+              dispatch(MessageActions.getMessageList(auth.token, text))
+            }
             placeholder="Search"
             style={{color: '#e6e9ef', fontSize: 15}}
           />
@@ -78,13 +81,16 @@ const ChatList = ({navigation}) => {
         )}
         {!message.isLoading && message.isError && (
           <Text note style={{color: '#F01F0E'}}>
-            Bad connection. Please try again
+            &nbsp;
           </Text>
         )}
         {!message.isLoading && !message.isError && (
           <FlatList
-            data={message.dataList}
-            inverted
+            data={message.data}
+            refreshing={false}
+            onRefresh={() =>
+              dispatch(MessageActions.getMessageList(auth.token))
+            }
             renderItem={({item}) => (
               <>
                 {auth.decoded.id === item.sender && (

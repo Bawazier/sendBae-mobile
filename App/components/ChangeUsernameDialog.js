@@ -10,7 +10,7 @@ import ProfileActions from '../redux/actions/profile';
 
 const ChangeUsername = (props) => {
   const auth = useSelector((state) => state.auth);
-  const profile = useSelector((state) => state.profile);
+  const dataProfile = useSelector((state) => state.dataProfile);
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object({
@@ -23,7 +23,7 @@ const ChangeUsername = (props) => {
   return (
     <Formik
       initialValues={{
-        username: profile.data[0].username || '',
+        username: dataProfile.data[0].username || '',
       }}
       validationSchema={validationSchema}
       onSubmit={async (values) => {

@@ -6,7 +6,7 @@ import {View, List, ListItem, Left, Body, Text} from 'native-base';
 import {FlatList} from 'react-native';
 
 const CountryDialog = (props) => {
-  const country = useSelector((state) => state.country);
+  const dataCountry = useSelector((state) => state.dataCountry);
 
   return (
     <View>
@@ -17,7 +17,7 @@ const CountryDialog = (props) => {
           Select Country
         </Dialog.Title>
         <FlatList
-          data={country.data}
+          data={dataCountry.data}
           renderItem={({item}) => (
             <ListItem
               style={{borderBottomWidth: 0}}

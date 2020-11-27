@@ -10,7 +10,7 @@ import ProfileActions from '../redux/actions/profile';
 
 const ChangePhoneDialog = (props) => {
   const auth = useSelector((state) => state.auth);
-  const profile = useSelector((state) => state.profile);
+  const dataProfile = useSelector((state) => state.dataProfile);
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object({
@@ -24,12 +24,12 @@ const ChangePhoneDialog = (props) => {
   return (
     <Formik
       initialValues={{
-        phoneNumber: parseInt(profile.data[0].phoneNumber),
+        phoneNumber: parseInt(dataProfile.data[0].phoneNumber),
       }}
       validationSchema={validationSchema}
       onSubmit={async (values) => {
         const data = {
-          countryId: profile.data[0].Country.id,
+          countryId: dataProfile.data[0].Country.id,
           phoneNumber: values.phoneNumber,
         };
         console.log(data);

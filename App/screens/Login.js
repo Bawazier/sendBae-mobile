@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -15,7 +16,8 @@ const Login = () => {
   const [selectCountry, setSelectCountry] = useState(false);
   const [countryName, setCountryName] = useState('Indonesia');
   const [countryCode, setCountryCode] = useState('+62');
-  const country = useSelector((state) => state.country);
+  const dataCountry = useSelector((state) => state.dataCountry);
+  const dataIdCountry = useSelector((state) => state.dataIdCountry);
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object({
@@ -26,9 +28,14 @@ const Login = () => {
       .required(),
   });
 
+  useEffect(() => {
+    dispatch(CountryActions.getCountry());
+  }, []);
+
   const onSelectCountry = async () => {
-    await dispatch(CountryActions.getCountry());
-    setSelectCountry(true);
+    if (!dataCountry.isLoading && !dataCountry.isError) {
+      setSelectCountry(true);
+    }
   };
 
   const handleCancel = async () => {
@@ -38,21 +45,21 @@ const Login = () => {
   const handleSelect = async (id) => {
     await dispatch(CountryActions.getCountryId(id));
     setSelectCountry(!selectCountry);
-    setCountryName(country.dataId.name);
-    setCountryCode(country.dataId.code);
+    setCountryName(dataIdCountry.data.name);
+    setCountryCode(dataIdCountry.data.code);
   };
 
   return (
     <Formik
       initialValues={{
-        countryName: countryName,
-        countryCode: countryCode,
+        countryName: dataIdCountry.data.name || 'Indonesia',
+        countryCode: dataIdCountry.data.code || '+62',
         phoneNumber: '',
       }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
         const data = {
-          countryId: country.dataId.id || 1,
+          countryId: dataIdCountry.data.id || 1,
           phoneNumber: values.phoneNumber,
         };
         dispatch(AuthActions.login(data));

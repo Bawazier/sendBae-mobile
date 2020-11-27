@@ -24,13 +24,14 @@ import {API_URL} from '@env';
 //Actions
 import ContactActions from '../redux/actions/contact';
 import MessageActions from '../redux/actions/message';
+import ProfileActions from '../redux/actions/profile';
 
 import ContactDialog from '../components/ContactDialog';
 
 const Contacts = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const auth = useSelector((state) => state.auth);
-  const contact = useSelector((state) => state.contact);
+  const dataContact = useSelector((state) => state.dataContact);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Contacts = ({navigation}) => {
   const handlePressList = async (id) => {
     dispatch(MessageActions.getRecipiendId(id));
     await dispatch(MessageActions.getMessage(auth.token, id));
-    dispatch(MessageActions.getMessageList(auth.token));
+    // await dispatch(ProfileActions.getProfileId(auth.token, id));
     navigation.navigate('ChatRoom');
   };
 
@@ -63,6 +64,9 @@ const Contacts = ({navigation}) => {
               style={{color: '#2f4562', fontSize: 15}}
             />
             <Input
+              onChangeText={(text) =>
+                dispatch(ContactActions.getContact(auth.token, text))
+              }
               placeholder="Search"
               style={{color: '#e6e9ef', fontSize: 15}}
             />
@@ -70,19 +74,14 @@ const Contacts = ({navigation}) => {
         </Body>
       </Header>
       <Content style={{backgroundColor: '#152642'}}>
-        {contact.isLoading && !contact.isError && (
-          <Text note style={{color: '#767d92'}}>
-            Loading....
-          </Text>
-        )}
-        {!contact.isLoading && contact.isError && (
+        {!dataContact.isLoading && dataContact.isError && (
           <Text note style={{color: '#F01F0E'}}>
-            Bad connection. Please try again
+            &nbsp;
           </Text>
         )}
-        {!contact.isLoading && !contact.isError && (
+        {!dataContact.isLoading && !dataContact.isError && (
           <FlatList
-            data={contact.data}
+            data={dataContact.data}
             renderItem={({item}) => (
               <ListItem avatar onPress={() => handlePressList(item.User.id)}>
                 <Left>

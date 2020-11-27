@@ -19,7 +19,7 @@ import {
 
 const Settings = ({navigation}) => {
   const auth = useSelector((state) => state.auth);
-  const profile = useSelector((state) => state.profile);
+  const dataProfile = useSelector((state) => state.dataProfile);
   return (
     <Content
       style={{
@@ -37,8 +37,8 @@ const Settings = ({navigation}) => {
             <Left>
               <Thumbnail
                 source={
-                  profile.data[0].photo
-                    ? {uri: profile.data[0].URL_photo}
+                  dataProfile.data[0].photo
+                    ? {uri: dataProfile.data[0].URL_photo}
                     : {
                         uri:
                           'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
@@ -49,7 +49,7 @@ const Settings = ({navigation}) => {
             </Left>
             <Body style={{borderBottomWidth: 0}}>
               <Text style={{color: '#e6e9ef'}}>
-                {profile.data[0].firstName} {profile.data[0].lastName}
+                {dataProfile.data[0].firstName} {dataProfile.data[0].lastName}
               </Text>
               <Text note style={{color: '#2f4562'}}>
                 last seen{' '}

@@ -31,7 +31,7 @@ const Profile = () => {
   const [changePhone, setChangePhone] = useState(false);
   const [changeUsername, setChangeUsername] = useState(false);
   const auth = useSelector((state) => state.auth);
-  const profile = useSelector((state) => state.profile);
+  const dataProfile = useSelector((state) => state.dataProfile);
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object({
@@ -48,7 +48,7 @@ const Profile = () => {
       },
     };
 
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       console.log({response});
 
       if (response.didCancel) {
@@ -66,10 +66,11 @@ const Profile = () => {
           name: response.fileName,
           path: response.path,
         });
-        dispatch(ProfileActions.patchProfile(auth.token, imageData));
+        console.log(imageData);
+        await dispatch(ProfileActions.patchProfileImage(auth.token, imageData));
+        return dispatch(ProfileActions.getProfile(auth.token));
       }
     });
-    return dispatch(ProfileActions.getProfile(auth.token));
   };
 
   return (
@@ -84,9 +85,9 @@ const Profile = () => {
         }}>
         <Thumbnail
           source={
-            profile.data[0].photo
+            dataProfile.data[0].photo
               ? {
-                  uri: profile.data[0].URL_photo,
+                  uri: dataProfile.data[0].URL_photo,
                 }
               : {
                   uri:
@@ -128,8 +129,8 @@ const Profile = () => {
             </Left>
             <Body style={{borderBottomWidth: 0}}>
               <Text style={{color: '#e6e9ef'}}>
-                {profile.data[0].firstName || 'Please change'}{' '}
-                {profile.data[0].lastName || 'Your Name'}
+                {dataProfile.data[0].firstName || 'Please change'}{' '}
+                {dataProfile.data[0].lastName || 'Your Name'}
               </Text>
               <Text note style={{color: '#2f4562'}}>
                 Name
@@ -153,8 +154,8 @@ const Profile = () => {
             </Left>
             <Body style={{borderBottomWidth: 0}}>
               <Text style={{color: '#e6e9ef'}}>
-                {profile.data[0].Country.code || 'Your'}{' '}
-                {profile.data[0].phoneNumber || 'Number'}
+                {dataProfile.data[0].Country.code || 'Your'}{' '}
+                {dataProfile.data[0].phoneNumber || 'Number'}
               </Text>
               <Text note style={{color: '#2f4562'}}>
                 Phone number
@@ -178,7 +179,7 @@ const Profile = () => {
             </Left>
             <Body style={{borderBottomWidth: 0}}>
               <Text style={{color: '#e6e9ef'}}>
-                {profile.data[0].username || 'Please change Your Username'}
+                {dataProfile.data[0].username || 'Please change Your Username'}
               </Text>
               <Text note style={{color: '#2f4562'}}>
                 Username
@@ -196,7 +197,7 @@ const Profile = () => {
       </View>
       <Formik
         initialValues={{
-          bio: profile.data[0].bio || '',
+          bio: dataProfile.data[0].bio || '',
         }}
         validationSchema={validationSchema}
         onSubmit={async (values) => {

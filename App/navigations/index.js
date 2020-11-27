@@ -1,5 +1,6 @@
 import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
+import {format} from 'date-fns';
 
 import Main from '../screens/Main';
 import Login from '../screens/Login';
@@ -83,6 +84,7 @@ const ProfileStack = () => {
 };
 
 const ChatStack = () => {
+  const dataIdProfile = useSelector((state) => state.dataIdProfile);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -102,23 +104,37 @@ const ChatStack = () => {
           headerTitleContainerStyle: {marginLeft: -35},
           headerTitle: () => (
             <List style={{}}>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail
-                    source={{
-                      uri:
-                        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
-                    }}
-                    style={{width: 40, height: 40}}
-                  />
-                </Left>
-                <Body style={{borderBottomWidth: 0}}>
-                  <Text style={{color: '#e6e9ef'}}>Kumar Pratik</Text>
-                  <Text note style={{color: '#2f4562'}}>
-                    last seen 12.11.20
-                  </Text>
-                </Body>
-              </ListItem>
+              {!dataIdProfile.isLoading && !dataIdProfile.isError && (
+                <ListItem avatar>
+                  <Left>
+                    <Thumbnail
+                      source={
+                        dataIdProfile.data.photo
+                          ? {
+                              uri: dataIdProfile.data.URL_photo,
+                            }
+                          : {
+                              uri:
+                                'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.slashfilm.com%2Fwp%2Fwp-content%2Fimages%2Favatar2-jake-navi-screaming.jpg&f=1&nofb=1',
+                            }
+                      }
+                      style={{width: 40, height: 40}}
+                    />
+                  </Left>
+                  <Body style={{borderBottomWidth: 0}}>
+                    <Text style={{color: '#e6e9ef'}}>
+                      {dataIdProfile.data.firstName}
+                    </Text>
+                    <Text note style={{color: '#2f4562'}}>
+                      last seen{' '}
+                      {format(
+                        new Date(dataIdProfile.data.createdAt),
+                        'kk.mm a',
+                      )}
+                    </Text>
+                  </Body>
+                </ListItem>
+              )}
             </List>
           ),
           headerRight: () => (

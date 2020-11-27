@@ -16,7 +16,7 @@ import {
 import AuthActions from '../redux/actions/auth';
 
 const SideBar = ({navigation}) => {
-  const profile = useSelector((state) => state.profile);
+  const profile = useSelector((state) => state.dataProfile);
   const dispatch = useDispatch();
   return (
     <View style={{backgroundColor: '#152642', flex: 1}}>

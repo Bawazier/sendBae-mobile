@@ -9,13 +9,17 @@ export default {
       qs.stringify(data),
     ),
   }),
-  getMessage: (token, recipientId, search = '', page = 0, limit = 10) => ({
+  postMessageImage: (token, recipientId, data) => ({
+    type: 'POST_MESSAGE',
+    payload: http(token).post(`message/chat/${recipientId}`, data),
+  }),
+  getMessage: (token, recipientId, search = '', page = 1, limit = 10) => ({
     type: 'GET_MESSAGE',
     payload: http(token).get(
       `message/list/${recipientId}/?search=${search}&page=${page}&limit=${limit}`,
     ),
   }),
-  getMessageList: (token, search = '', page = 0, limit = 10) => ({
+  getMessageList: (token, search = '', page = 1, limit = 10) => ({
     type: 'GET_MESSAGE_LIST',
     payload: http(token).get(
       `message/list/?search=${search}&page=${page}&limit=${limit}`,

@@ -14,6 +14,10 @@ export default {
     type: 'PATCH_PROFILE',
     payload: http(token).patch('profile/', qs.stringify(data)),
   }),
+  patchProfileImage: (token, data) => ({
+    type: 'PATCH_PROFILE',
+    payload: http(token).patch('profile/', data),
+  }),
   putPhoneNumber: (token, data) => ({
     type: 'PUT_PROFILE',
     payload: http(token).put('profile/', qs.stringify(data)),

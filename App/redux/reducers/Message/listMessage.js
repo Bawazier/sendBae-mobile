@@ -28,7 +28,7 @@ export default (state = initialState, action) => {
         ...state,
         isLoading: false,
         isError: false,
-        dataList: action.payload.data.results,
+        data: action.payload.data.results,
         pageInfo: action.payload.data.pageInfo,
       };
     }

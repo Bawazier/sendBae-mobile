@@ -13,6 +13,7 @@ import MessageActions from '../redux/actions/message';
 
 const ChatRoom = () => {
   const auth = useSelector((state) => state.auth);
+  const chatMessage = useSelector((state) => state.chatMessage);
   const message = useSelector((state) => state.message);
   const dispatch = useDispatch();
 
@@ -30,7 +31,7 @@ const ChatRoom = () => {
       },
     };
 
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       console.log({response});
 
       if (response.didCancel) {
@@ -48,11 +49,14 @@ const ChatRoom = () => {
           name: response.fileName,
           path: response.path,
         });
-        dispatch(
-          MessageActions.postMessage(auth.token, message.recipientId, {
-            image: imageData,
-          }),
+        await dispatch(
+          MessageActions.postMessageImage(
+            auth.token,
+            message.recipientId,
+            imageData,
+          ),
         );
+        dispatch(MessageActions.getMessage(auth.token, message.recipientId));
       }
     });
   };
@@ -60,15 +64,38 @@ const ChatRoom = () => {
   return (
     <>
       <Content style={{backgroundColor: '#081b33'}}>
-        {!message.isLoading && message.isError && (
+        {chatMessage.isLoading && !chatMessage.isError && (
+          <FlatList
+            data={chatMessage.data}
+            inverted
+            renderItem={({item}) => (
+              <CardChat
+                message={item.Images.length ? false : item.message}
+                messageImage={
+                  item.Images.length
+                    ? item.Images.map((item) => item.image)
+                    : false
+                }
+                messageTime={format(new Date(item.createdAt), 'k.mm aaa')}
+                messageColor={
+                  item.sender !== auth.decoded.id ? '#152642' : '#2f4562'
+                }
+                messagePosition={item.sender === auth.decoded.id}
+                read={item.read}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+        {!chatMessage.isLoading && chatMessage.isError && (
           <Text note style={{color: '#F01F0E'}}>
             &nbsp;
           </Text>
         )}
-        {!message.isLoading && !message.isError && (
+        {!chatMessage.isLoading && !chatMessage.isError && (
           <FlatList
-            data={message.data}
-            // inverted
+            data={chatMessage.data}
+            inverted
             renderItem={({item}) => (
               <CardChat
                 message={item.Images.length ? false : item.message}
@@ -104,7 +131,6 @@ const ChatRoom = () => {
             MessageActions.postMessage(auth.token, message.recipientId, data),
           );
           dispatch(MessageActions.getMessage(auth.token, message.recipientId));
-          dispatch(MessageActions.getMessageList(auth.token));
         }}>
         {({
           handleChange,

@@ -26,7 +26,7 @@ export default (state = initialState, action) => {
         ...state,
         isLoading: false,
         isError: false,
-        dataId: action.payload.data.results,
+        data: action.payload.data.results,
       };
     }
     default: {

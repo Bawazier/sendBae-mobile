@@ -2,7 +2,7 @@ import http from '../../helpers/http';
 import qs from 'qs';
 
 export default {
-  getContact: (token, search = '', page = 0, limit = 10) => ({
+  getContact: (token, search = '', page = 1, limit = 10) => ({
     type: 'GET_CONTACT',
     payload: http(token).get(
       `contact/?search=${search}&page=${page}&limit=${limit}`,
