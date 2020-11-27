@@ -20,6 +20,8 @@ import {
 } from 'native-base';
 import {API_URL} from '@env';
 
+import socket from '../helpers/socket';
+
 //Actions
 import MessageActions from '../redux/actions/message';
 import ProfileActions from '../redux/actions/profile';
@@ -32,6 +34,14 @@ const ChatList = ({navigation}) => {
   useEffect(() => {
     dispatch(ProfileActions.getProfile(auth.token));
     dispatch(MessageActions.getMessageList(auth.token));
+    const id = auth.decoded.id;
+    console.log(id.toString());
+    socket.on(id.toString(), () =>
+      dispatch(MessageActions.getMessageList(auth.token)),
+    );
+    return () => {
+      socket.close();
+    };
   }, []);
 
   const handlePressList = async (id) => {
