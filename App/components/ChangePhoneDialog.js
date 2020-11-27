@@ -33,8 +33,13 @@ const ChangePhoneDialog = (props) => {
           phoneNumber: values.phoneNumber,
         };
         console.log(data);
-        await dispatch(ProfileActions.putPhoneNumber(auth.token, data));
-        dispatch(ProfileActions.getProfile(auth.token));
+        await dispatch(
+          ProfileActions.putPhoneNumber(
+            auth.token || auth.tokenTemporary,
+            data,
+          ),
+        );
+        dispatch(ProfileActions.getProfile(auth.token || auth.tokenTemporary));
       }}>
       {({
         handleChange,

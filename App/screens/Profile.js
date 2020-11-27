@@ -67,8 +67,15 @@ const Profile = () => {
           path: response.path,
         });
         console.log(imageData);
-        await dispatch(ProfileActions.patchProfileImage(auth.token, imageData));
-        return dispatch(ProfileActions.getProfile(auth.token));
+        await dispatch(
+          ProfileActions.patchProfileImage(
+            auth.token || auth.tokenTemporary,
+            imageData,
+          ),
+        );
+        return dispatch(
+          ProfileActions.getProfile(auth.token || auth.tokenTemporary),
+        );
       }
     });
   };

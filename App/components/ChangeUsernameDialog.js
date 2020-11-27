@@ -31,8 +31,10 @@ const ChangeUsername = (props) => {
           username: values.username,
         };
         console.log(data);
-        await dispatch(ProfileActions.patchProfile(auth.token, data));
-        dispatch(ProfileActions.getProfile(auth.token));
+        await dispatch(
+          ProfileActions.patchProfile(auth.token || auth.tokenTemporary, data),
+        );
+        dispatch(ProfileActions.getProfile(auth.token || auth.tokenTemporary));
       }}>
       {({
         handleChange,
