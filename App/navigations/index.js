@@ -21,7 +21,7 @@ import {
   Picker,
   Thumbnail,
 } from 'native-base';
-import {API_URL} from '@env';
+import {REACT_APP_API_URL} from '@env';
 
 import SideBar from '../components/SideBar';
 
@@ -58,6 +58,7 @@ const AuthStack = () => {
 };
 
 const ProfileStack = () => {
+  const dataProfile = useSelector((state) => state.dataProfile);
   const dispatch = useDispatch();
   return (
     <Stack.Navigator>
@@ -68,16 +69,24 @@ const ProfileStack = () => {
           title: '',
           cardShadowEnabled: false,
           headerStyle: {backgroundColor: '#152642', height: 50},
-          headerLeft: () => <Text>&nbsp;</Text>,
-          headerRight: () => (
-            <Button
-              info
-              style={{color: '#fff', width: 150, height: 50}}
-              onPress={() => dispatch(AuthActions.signUp())}>
-              <Text>START</Text>
-              <Icon name="long-arrow-right" type="FontAwesome" />
-            </Button>
-          ),
+          headerRight: () =>
+            dataProfile.data &&
+            dataProfile.data[0].firstName &&
+            dataProfile.data[0].photo ? (
+              <Button
+                info
+                style={{color: '#fff', width: '100%', height: 50}}
+                onPress={() => dispatch(AuthActions.signUp())}>
+                <Text>NEXT</Text>
+                <Icon name="long-arrow-right" type="FontAwesome" />
+              </Button>
+            ) : (
+              <Text
+                note
+                style={{color: '#fff', width: '100%', marginRight: 25}}>
+                Complete your personal data for the next step
+              </Text>
+            ),
         }}
       />
     </Stack.Navigator>
@@ -112,7 +121,7 @@ const ChatStack = () => {
                       source={
                         dataIdProfile.data.photo
                           ? {
-                              uri: API_URL + dataIdProfile.data.photo,
+                              uri: REACT_APP_API_URL + dataIdProfile.data.photo,
                             }
                           : {
                               uri:

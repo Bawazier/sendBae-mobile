@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Dialog from 'react-native-dialog';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
@@ -22,7 +22,16 @@ import ContactActions from '../redux/actions/contact';
 const ContactDialog = (props) => {
   const auth = useSelector((state) => state.auth);
   const contact = useSelector((state) => state.contact);
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!contact.isError) {
+      setError(false);
+    } else {
+      setError(true);
+    }
+  }, [contact]);
 
   const validationSchema = Yup.object({
     firstName: Yup.string().max(80).required(),
@@ -51,7 +60,7 @@ const ContactDialog = (props) => {
         console.log(data);
         await dispatch(ContactActions.postContact(auth.token, data));
         dispatch(ContactActions.getContact(auth.token));
-        return () => props.handleCancel;
+        props.handleCancel();
       }}>
       {({
         handleChange,
@@ -63,7 +72,7 @@ const ContactDialog = (props) => {
         errors,
       }) => (
         <View>
-          {!contact.isError && (
+          {!error && (
             <Dialog.Container
               visible={props.visible}
               contentStyle={{backgroundColor: '#152642'}}>
@@ -158,7 +167,7 @@ const ContactDialog = (props) => {
               />
             </Dialog.Container>
           )}
-          {contact.isError && (
+          {error && (
             <Dialog.Container
               visible={props.visible}
               contentStyle={{backgroundColor: '#152642'}}>
@@ -171,7 +180,7 @@ const ContactDialog = (props) => {
               </Dialog.Description>
               <Dialog.Button
                 label="TRY SOMEONE ELSE"
-                onPress={props.handleCancel}
+                onPress={() => setError(false)}
                 color="#62B1F6"
               />
             </Dialog.Container>
