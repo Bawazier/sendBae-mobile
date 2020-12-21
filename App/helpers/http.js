@@ -1,11 +1,11 @@
 import {default as axios} from 'axios';
 
-import {API_URL} from '@env';
+import {REACT_APP_API_URL} from '@env';
 
 export default (token = false) => {
-  console.log(API_URL);
+  console.log(REACT_APP_API_URL);
   return axios.create({
-    baseURL: API_URL,
+    baseURL: REACT_APP_API_URL,
     headers: {
       Authorization: token ? `Bearer ${token}` : undefined,
     },

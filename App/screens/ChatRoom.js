@@ -1,12 +1,14 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {format} from 'date-fns';
-import {Content, Footer, Icon, Input, Item, Text} from 'native-base';
-import {FlatList} from 'react-native';
+import {Content, Footer, Icon, Input, Item, Text, View} from 'native-base';
+import {FlatList, Alert} from 'react-native';
 import CardChat from '../components/CardChat';
 import ImagePicker from 'react-native-image-picker';
+
+import socket from '../helpers/socket';
 
 //Actions
 import MessageActions from '../redux/actions/message';
@@ -15,11 +17,43 @@ const ChatRoom = () => {
   const auth = useSelector((state) => state.auth);
   const chatMessage = useSelector((state) => state.chatMessage);
   const message = useSelector((state) => state.message);
+  const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(MessageActions.getMessage(auth.token, message.recipientId));
+    dispatch(MessageActions.getMessageList(auth.token));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    dispatch(MessageActions.getMessage(auth.token, message.recipientId));
+    dispatch(MessageActions.getMessageList(auth.token));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [message]);
 
   const validationSchema = Yup.object({
     phoneNumber: Yup.string(),
   });
+
+  const doRefresh = () => {
+    setLoading(true);
+    dispatch(MessageActions.getMessage(auth.token, message.recipientId));
+    setLoading(false);
+  };
+
+  const nextPage = () => {
+    if (chatMessage.pageInfo[0].pages > chatMessage.pageInfo[0].currentPage) {
+      dispatch(
+        MessageActions.getMessageScroll(
+          auth.token,
+          message.recipientId,
+          '',
+          chatMessage.pageInfo[0].currentPage + 1,
+        ),
+      );
+    }
+  };
 
   const selectImage = () => {
     let options = {
@@ -36,6 +70,11 @@ const ChatRoom = () => {
 
       if (response.didCancel) {
         console.log('User cancelled photo picker');
+      } else if (response.fileSize > 2 * 1024 * 1024) {
+        Alert.alert(
+          'Image upload failed!',
+          'Images should not be more than 2MB',
+        );
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
@@ -63,9 +102,13 @@ const ChatRoom = () => {
 
   return (
     <>
-      <Content style={{backgroundColor: '#081b33'}}>
+      <View style={{flex: 1, backgroundColor: '#081b33'}}>
         {chatMessage.isLoading && !chatMessage.isError && (
           <FlatList
+            refreshing={loading}
+            onRefresh={doRefresh}
+            onEndReached={nextPage}
+            onEndReachedThreshold={0.5}
             data={chatMessage.data}
             inverted
             renderItem={({item}) => (
@@ -73,7 +116,7 @@ const ChatRoom = () => {
                 message={item.Images.length ? false : item.message}
                 messageImage={
                   item.Images.length
-                    ? item.Images.map((item) => item.image)
+                    ? item.Images.map((items) => items.image)
                     : false
                 }
                 messageTime={format(new Date(item.createdAt), 'k.mm aaa')}
@@ -84,7 +127,7 @@ const ChatRoom = () => {
                 read={item.read}
               />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index.toString()}
           />
         )}
         {!chatMessage.isLoading && chatMessage.isError && (
@@ -94,6 +137,10 @@ const ChatRoom = () => {
         )}
         {!chatMessage.isLoading && !chatMessage.isError && (
           <FlatList
+            refreshing={loading}
+            onRefresh={doRefresh}
+            onEndReached={nextPage}
+            onEndReachedThreshold={0.5}
             data={chatMessage.data}
             inverted
             renderItem={({item}) => (
@@ -101,7 +148,7 @@ const ChatRoom = () => {
                 message={item.Images.length ? false : item.message}
                 messageImage={
                   item.Images.length
-                    ? item.Images.map((item) => item.image)
+                    ? item.Images.map((items) => items.image)
                     : false
                 }
                 messageTime={format(new Date(item.createdAt), 'k.mm aaa')}
@@ -112,10 +159,10 @@ const ChatRoom = () => {
                 read={item.read}
               />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index.toString()}
           />
         )}
-      </Content>
+      </View>
       <Formik
         initialValues={{
           message: '',
@@ -130,7 +177,6 @@ const ChatRoom = () => {
           await dispatch(
             MessageActions.postMessage(auth.token, message.recipientId, data),
           );
-          dispatch(MessageActions.getMessage(auth.token, message.recipientId));
         }}>
         {({
           handleChange,

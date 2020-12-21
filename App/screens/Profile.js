@@ -18,6 +18,7 @@ import {
   Thumbnail,
   Button,
 } from 'native-base';
+import {Alert} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 
 import ChangeNameDialog from '../components/ChangeNameDialog';
@@ -61,6 +62,11 @@ const Profile = () => {
 
       if (response.didCancel) {
         console.log('User cancelled photo picker');
+      } else if (response.fileSize > 2 * 1024 * 1024) {
+        Alert.alert(
+          'Image upload failed!',
+          'Images should not be more than 2MB',
+        );
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {

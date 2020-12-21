@@ -17,8 +17,9 @@ import {
   Right,
   Thumbnail,
   Badge,
+  View,
 } from 'native-base';
-import {API_URL} from '@env';
+import {REACT_APP_API_URL} from '@env';
 
 import socket from '../helpers/socket';
 
@@ -33,22 +34,48 @@ const ChatList = ({navigation}) => {
 
   useEffect(() => {
     dispatch(ProfileActions.getProfile(auth.token));
+    // const readEvent = auth.decoded.id;
+    const sendEvent = auth.decoded.id;
     dispatch(MessageActions.getMessageList(auth.token));
-    const id = auth.decoded.id;
-    console.log(id.toString());
-    socket.on(id.toString(), () =>
-      dispatch(MessageActions.getMessageList(auth.token)),
-    );
+    socket.on(sendEvent.toString(), ({sender, messages, senderData}) => {
+      console.log('theres an event');
+      console.log(messages);
+      dispatch(MessageActions.getMessage(auth.token, sender));
+      dispatch(MessageActions.getMessageList(auth.token));
+      console.log(senderData);
+      console.log(messages);
+    });
+    // socket.on(readEvent, ({reciever, read}) => {
+    //   dispatch(MessageActions.getMessageList(auth.token));
+    // });
     return () => {
       socket.close();
     };
   }, []);
 
   const handlePressList = async (id) => {
-    dispatch(MessageActions.getRecipiendId(id));
-    await dispatch(MessageActions.getMessage(auth.token, id));
     await dispatch(ProfileActions.getProfileId(auth.token, id));
+    await dispatch(MessageActions.getRecipiendId(id));
     navigation.navigate('ChatRoom');
+  };
+
+  const [loading, setLoading] = React.useState(false);
+  const doRefresh = () => {
+    setLoading(true);
+    dispatch(MessageActions.getMessageList(auth.token));
+    setLoading(false);
+  };
+
+  const nextPage = () => {
+    if (message.pageInfo[0].pages > message.pageInfo[0].currentPage) {
+      dispatch(
+        MessageActions.getMessageListScroll(
+          auth.token,
+          '',
+          message.pageInfo[0].currentPage + 1,
+        ),
+      );
+    }
   };
 
   return (
@@ -84,23 +111,19 @@ const ChatList = ({navigation}) => {
         </Item>
       </Header>
       <Content style={{backgroundColor: '#081b33'}}>
-        {message.isLoading && !message.isError && (
-          <Text note style={{color: '#767d92'}}>
-            Loading....
-          </Text>
-        )}
-        {!message.isLoading && message.isError && (
-          <Text note style={{color: '#F01F0E'}}>
-            &nbsp;
-          </Text>
-        )}
+        {/* {!message.isLoading && message.isError && (
+          <View>
+            <Text>Welcome to Send Bae App</Text>
+            <Text>Please add a friendship contact to start a chat</Text>
+          </View>
+        )} */}
         {!message.isLoading && !message.isError && (
           <FlatList
+            refreshing={loading}
+            onRefresh={doRefresh}
+            onEndReached={nextPage}
+            onEndReachedThreshold={0.5}
             data={message.data}
-            refreshing={false}
-            onRefresh={() =>
-              dispatch(MessageActions.getMessageList(auth.token))
-            }
             renderItem={({item}) => (
               <>
                 {auth.decoded.id === item.sender && (
@@ -112,7 +135,8 @@ const ChatList = ({navigation}) => {
                         source={
                           item.userRecipient.photo
                             ? {
-                                uri: API_URL + item.userRecipient.photo,
+                                uri:
+                                  REACT_APP_API_URL + item.userRecipient.photo,
                               }
                             : {
                                 uri:
@@ -128,9 +152,9 @@ const ChatList = ({navigation}) => {
                         {item.userRecipient.lastName || 'User'}
                       </Text>
                       <Text note style={{color: '#767d92'}}>
-                        {item.message.length < 30
+                        {item.message.length < 40
                           ? item.message
-                          : item.message.slice(0, 30).concat('...')}
+                          : item.message.slice(0, 40).concat('...')}
                       </Text>
                     </Body>
                     <Right style={{borderBottomWidth: 0}}>
@@ -152,7 +176,7 @@ const ChatList = ({navigation}) => {
                         source={
                           item.userSender.photo
                             ? {
-                                uri: API_URL + item.userSender.photo,
+                                uri: REACT_APP_API_URL + item.userSender.photo,
                               }
                             : {
                                 uri:
@@ -168,9 +192,9 @@ const ChatList = ({navigation}) => {
                         {item.userSender.lastName || 'User'}
                       </Text>
                       <Text note style={{color: '#767d92'}}>
-                        {item.message.length < 20
+                        {item.message.length < 40
                           ? item.message
-                          : item.message.slice(0, 20).concat('...')}
+                          : item.message.slice(0, 40).concat('...')}
                       </Text>
                     </Body>
                     <Right style={{borderBottomWidth: 0}}>
@@ -187,7 +211,7 @@ const ChatList = ({navigation}) => {
                 )}
               </>
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index.toString()}
           />
         )}
       </Content>

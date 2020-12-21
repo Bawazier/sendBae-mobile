@@ -43,8 +43,8 @@ const Login = () => {
   };
 
   const handleSelect = async (id) => {
-    await dispatch(CountryActions.getCountryId(id));
     setSelectCountry(!selectCountry);
+    await dispatch(CountryActions.getCountryId(id));
     setCountryName(dataIdCountry.data.name);
     setCountryCode(dataIdCountry.data.code);
   };
@@ -106,7 +106,7 @@ const Login = () => {
                 onPress={onSelectCountry}>
                 <Input
                   name="countryName"
-                  value={countryName}
+                  value={dataIdCountry.data.name || countryName}
                   disabled
                   style={{textAlign: 'left', color: '#e6e9ef'}}
                 />
@@ -121,7 +121,7 @@ const Login = () => {
                 <Item style={{width: '20%', borderColor: '#2f4562'}}>
                   <Input
                     name="countryCode"
-                    value={countryCode}
+                    value={dataIdCountry.data.code || countryCode}
                     disabled
                     style={{textAlign: 'center', color: '#e6e9ef'}}
                   />

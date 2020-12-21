@@ -19,7 +19,7 @@ import {
   Footer,
   FooterTab,
 } from 'native-base';
-import {API_URL} from '@env';
+import {REACT_APP_API_URL} from '@env';
 
 //Actions
 import ContactActions from '../redux/actions/contact';
@@ -89,7 +89,7 @@ const Contacts = ({navigation}) => {
                     source={
                       item.User.photo
                         ? {
-                            uri: API_URL + item.User.photo,
+                            uri: REACT_APP_API_URL + item.User.photo,
                           }
                         : {
                             uri:
