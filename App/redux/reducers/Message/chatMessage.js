@@ -4,6 +4,9 @@ const initialState = {
   isLoading: false,
   isError: false,
   alertMsg: '',
+
+  isScrollLoading: false,
+  isScrollError: false,
 };
 
 export default (state = initialState, action) => {
@@ -30,6 +33,29 @@ export default (state = initialState, action) => {
         isError: false,
         data: action.payload.data.results,
         pageInfo: action.payload.data.pageInfo,
+      };
+    }
+    case 'GET_MESSAGE_SCROLL_PENDING': {
+      return {
+        ...state,
+        isScrollLoading: true,
+      };
+    }
+    case 'GET_MESSAGE_SCROLL_REJECTED': {
+      return {
+        ...state,
+        isScrollLoading: false,
+        isScrollError: true,
+        alertMsg: action.payload,
+      };
+    }
+    case 'GET_MESSAGE_SCROLL_FULFILLED': {
+      return {
+        ...state,
+        isScrollLoading: false,
+        isScrollError: false,
+        data: [...state.data, ...action.payload.data.results],
+        pageInfo: {...state.pageInfo, ...action.payload.data.pageInfo},
       };
     }
     default: {

@@ -13,17 +13,23 @@ export default {
     type: 'POST_MESSAGE',
     payload: http(token).post(`message/chat/${recipientId}`, data),
   }),
-  getMessage: (token, recipientId, search = '', page = 1, limit = 10) => ({
+  getMessage: (token, recipientId, search = '') => ({
     type: 'GET_MESSAGE',
+    payload: http(token).get(`message/list/${recipientId}/?search=${search}`),
+  }),
+  getMessageScroll: (token, recipientId, search = '', page) => ({
+    type: 'GET_MESSAGE_SCROLL',
     payload: http(token).get(
-      `message/list/${recipientId}/?search=${search}&page=${page}&limit=${limit}`,
+      `message/list/${recipientId}/?search=${search}&page=${page}`,
     ),
   }),
-  getMessageList: (token, search = '', page = 1, limit = 10) => ({
+  getMessageList: (token, search = '') => ({
     type: 'GET_MESSAGE_LIST',
-    payload: http(token).get(
-      `message/list/?search=${search}&page=${page}&limit=${limit}`,
-    ),
+    payload: http(token).get(`message/list/?search=${search}`),
+  }),
+  getMessageListScroll: (token, search = '', page) => ({
+    type: 'GET_MESSAGE_LIST_SCROLL',
+    payload: http(token).get(`message/list/?search=${search}&page=${page}`),
   }),
   getRecipiendId: (id) => ({
     type: 'GET_RECIPIENT_ID',
